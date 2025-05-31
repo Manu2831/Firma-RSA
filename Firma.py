@@ -78,22 +78,41 @@ def verify(msg: str, signature: int, pub_key):
 
 # ----------------- DEMO rápida ---------------------------------------
 if __name__ == "__main__":
-    # 1. Generar claves
-    public_k, private_k = generate_keypair(bits=12)  # 12 bits para que sea muy rápido
+    print("=== Simulador de Firma Digital (RSA + Hash) ===")
+
+    # Generar claves
+    public_k, private_k = generate_keypair(bits=12)
+    print("Claves generadas.")
     print("Clave pública (e, n):", public_k)
     print("Clave privada (d, n):", private_k)
-    
-    M = "Hola, RSA!"
-    print("\nMensaje:", M)
 
-    # 3. Firmar
-    F = sign(M, private_k)
-    print("Firma:", F)
+    while True:
+        print("\n¿Qué deseas hacer?")
+        print("1. Firmar un mensaje")
+        print("2. Verificar una firma")
+        print("3. Salir")
 
-    # 4. Verificar (mismo mensaje)
-    print("¿Verificación OK?", verify(M, F, public_k))
+        opcion = input("Elige una opción: ")
 
-    # 5. Verificar con mensaje modificado
-    M2 = "Hola, RSB?"           
-    print("\nMensaje alterado:", M2)
-    print("¿Verificación OK?", verify(M2, F, public_k))
+        if opcion == "1":
+            mensaje = input("Ingresa el mensaje a firmar: ")
+            firma = sign(mensaje, private_k)
+            print("Firma generada:", firma)
+
+        elif opcion == "2":
+            mensaje = input("Ingresa el mensaje a verificar: ")
+            try:
+                firma = int(input("Ingresa la firma recibida: "))
+                es_valida = verify(mensaje, firma, public_k)
+                if es_valida:
+                    print("✅ Firma VÁLIDA. El mensaje es auténtico.")
+                else:
+                    print("❌ Firma NO válida. El mensaje fue alterado o la firma es falsa.")
+            except ValueError:
+                print("La firma debe ser un número entero.")
+
+        elif opcion == "3":
+            print("¡Hasta luego!")
+            break
+        else:
+            print("Opción no válida. Intenta de nuevo.")
